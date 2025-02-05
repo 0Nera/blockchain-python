@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Explorer</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        .chart-container { width: 50%; margin: 20px auto; }
+    </style>
+</head>
+<body>
+    <h1>Blockchain Explorer</h1>
+
+    <h2>Pool of Transactions</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Sender</th>
+            <th>Recipient</th>
+            <th>Amount</th>
+        </tr>
+        {% for tx in transactions %}
+        <tr>
+            <td>{{ tx.id }}</td>
+            <td>{{ tx.sender }}</td>
+            <td>{{ tx.recipient }}</td>
+            <td>{{ tx.amount }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Blockchain Stats</h2>
+    <p>Chain Length: {{ chain_length }}</p>
+    <p>Current Difficulty: {{ difficulty }}</p>
+
+    <h2>Top Miners</h2>
+    <table>
+        <tr>
+            <th>Miner</th>
+            <th>Blocks Mined</th>
+        </tr>
+        {% for miner, count in top_miners %}
+        <tr>
+            <td>{{ miner }}</td>
+            <td>{{ count }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Last 10 Blocks</h2>
+    <table>
+        <tr>
+            <th>Index</th>
+            <th>Timestamp</th>
+            <th>Hash</th>
+            <th>Nonce</th>
+        </tr>
+        {% for block in blocks %}
+        <tr>
+            <td><a href="/block/{{ block.index }}">{{ block.index }}</a></td>
+            <td>{{ block.timestamp }}</td>
+            <td>{{ block.hash[:10] }}...</td>
+            <td>{{ block.nonce }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="chart-container">
+        <canvas id="minerChart"></canvas>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('minerChart').getContext('2d');
+        const minerChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ top_miners | map(attribute='0') | list | tojson }},
+                datasets: [{
+                    label: 'Blocks Mined',
+                    data: {{ top_miners | map(attribute='1') | list | tojson }},
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

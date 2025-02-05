@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block {{ block.index }}</title>
+</head>
+<body>
+    <h1>Block {{ block.index }}</h1>
+    <p><strong>Timestamp:</strong> {{ block.timestamp }}</p>
+    <p><strong>Previous Hash:</strong> {{ block.previous_hash }}</p>
+    <p><strong>Hash:</strong> {{ block.hash }}</p>
+    <p><strong>Nonce:</strong> {{ block.nonce }}</p>
+
+    <h2>Transactions</h2>
+    <table>
+        <tr>
+            <th>Sender</th>
+            <th>Recipient</th>
+            <th>Amount</th>
+        </tr>
+        {% for tx in block.transactions %}
+        <tr>
+            <td>{{ tx.sender }}</td>
+            <td>{{ tx.recipient }}</td>
+            <td>{{ tx.amount }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="/">Back to Home</a>
+</body>
+</html>
